@@ -1,0 +1,38 @@
+{
+  "conversation": {
+    "display_name": "协同运维群",
+    "id": "grp-ops",
+    "type": "group"
+  },
+  "kind": "classify",
+  "me": {
+    "display_name": "张三",
+    "user_id": "U_ZHANGSAN"
+  },
+  "participants": [
+    {
+      "display_name": "孙经理",
+      "user_id": "U_SUN_MANAGER"
+    }
+  ],
+  "prompt_version": "classify/v1",
+  "records": [
+    {
+      "body": "@张三 你说的卡顿应该就是同一个原因，这块李四负责，你不用跟。",
+      "direction": "in",
+      "id": "A06-R2",
+      "mentions": [
+        "U_ZHANGSAN"
+      ],
+      "occurred_at": "2026-11-21T10:03:00+08:00",
+      "reply_to": "A06-R0",
+      "sender_id": "U_SUN_MANAGER",
+      "sender_name": "孙经理"
+    }
+  ],
+  "schema_version": "classify-input/v1",
+  "source": {
+    "id": "src-grp-ops",
+    "kind": "dws_im"
+  }
+}

@@ -1,0 +1,29 @@
+[package]
+name = "workcontext-infra"
+description = "适配器：dws / agent / platform / logging / clock"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+chrono = { version = "0.4", default-features = false }
+regex = "1"
+# 判读幂等键 SHA-256（纯 Rust 实现，无网络）。
+sha2 = "0.10"
+# B3 同步引擎：记录/检查点直接事务写入工作库（依赖方向 core ← store ← infra）。
+workcontext-store = { workspace = true }
+rusqlite = { workspace = true }
+# content_hash 的 NFC 规范形（详细设计 §4.4「NFC + sha256」）。
+unicode-normalization = "0.1"
+# 暂不依赖 workcontext-core：core 的判读/策略 DTO 正在 B2 并行开发，
+# 本 crate 对外以 serde_json::Value 交换 classify/v1 载荷（见 lib.rs），
+# 待 core 契约稳定后再恢复 workspace 依赖并收窄为强类型。
+
+# 合成 CLI subprocess 验收测试的替身二进制（不触真实 dws/omp；M6 门槛）。
+# 集成测试经 `env!("CARGO_BIN_EXE_wctx-fake-cli")` 取路径注入适配器。
+[[bin]]
+name = "wctx-fake-cli"
+path = "fake_cli/main.rs"

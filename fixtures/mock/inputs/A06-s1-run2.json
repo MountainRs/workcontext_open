@@ -1,0 +1,42 @@
+{
+  "conversation": {
+    "display_name": "协同运维群",
+    "id": "grp-ops",
+    "type": "group"
+  },
+  "kind": "classify",
+  "me": {
+    "display_name": "张三",
+    "user_id": "U_ZHANGSAN"
+  },
+  "participants": [
+    {
+      "display_name": "马工",
+      "user_id": "U_MAGONG"
+    },
+    {
+      "display_name": "钱经理",
+      "user_id": "U_QIAN_MANAGER"
+    }
+  ],
+  "prompt_version": "classify/v1",
+  "records": [
+    {
+      "body": "@马工 图纸评审这周你牵头；张三作为资料接口人配合对齐就行，不用额外出力。",
+      "direction": "in",
+      "id": "A06-R3",
+      "mentions": [
+        "U_MAGONG"
+      ],
+      "occurred_at": "2026-11-21T10:20:00+08:00",
+      "reply_to": null,
+      "sender_id": "U_QIAN_MANAGER",
+      "sender_name": "钱经理"
+    }
+  ],
+  "schema_version": "classify-input/v1",
+  "source": {
+    "id": "src-grp-ops",
+    "kind": "dws_im"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "conversation": {
+    "display_name": "私聊·钱经理",
+    "id": "dm-qian-manager",
+    "type": "dm"
+  },
+  "kind": "classify",
+  "me": {
+    "display_name": "张三",
+    "user_id": "U_ZHANGSAN"
+  },
+  "participants": [
+    {
+      "display_name": "钱经理",
+      "user_id": "U_QIAN_MANAGER"
+    }
+  ],
+  "prompt_version": "classify/v1",
+  "records": [
+    {
+      "body": "张三，二期的图纸复核推广接下来你跟进吧。",
+      "direction": "in",
+      "id": "A11-R1",
+      "mentions": [],
+      "occurred_at": "2026-11-21T09:10:00+08:00",
+      "reply_to": null,
+      "sender_id": "U_QIAN_MANAGER",
+      "sender_name": "钱经理"
+    }
+  ],
+  "schema_version": "classify-input/v1",
+  "source": {
+    "id": "src-dm-qian",
+    "kind": "dws_im"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "conversation": {
+    "display_name": "私聊·周总",
+    "id": "dm-zhou-dir",
+    "type": "dm"
+  },
+  "kind": "classify",
+  "me": {
+    "display_name": "张三",
+    "user_id": "U_ZHANGSAN"
+  },
+  "participants": [
+    {
+      "display_name": "周总",
+      "user_id": "U_ZHOU_DIR"
+    }
+  ],
+  "prompt_version": "classify/v1",
+  "records": [
+    {
+      "body": "图纸归档整改这项要优先推进，你先把目前的整改进度摸清楚，不清楚的地方可以先问档案组的周工。",
+      "direction": "in",
+      "id": "A02-R1",
+      "mentions": [],
+      "occurred_at": "2026-11-21T09:40:00+08:00",
+      "reply_to": null,
+      "sender_id": "U_ZHOU_DIR",
+      "sender_name": "周总"
+    },
+    {
+      "body": "收到，我先梳理一遍目前的整改进度和遗留问题，有需要再请教周工。",
+      "direction": "out",
+      "id": "A02-R2",
+      "mentions": [],
+      "occurred_at": "2026-11-21T09:52:00+08:00",
+      "reply_to": null,
+      "sender_id": "U_ZHANGSAN",
+      "sender_name": "张三"
+    }
+  ],
+  "schema_version": "classify-input/v1",
+  "source": {
+    "id": "src-dm-zhou",
+    "kind": "dws_im"
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "schema_version": "case/v1",
+  "case_id": "A11",
+  "title": "AI 误判纠正：选「不是我的任务」后立即移除、留痕，且不被重复判读静默恢复",
+  "prd_refs": [
+    "PRD §12 A11（V0.1 横向必过）",
+    "PRD §13.2-3（人工纠正不能被重复同步无证据地覆盖）",
+    "详细设计 §16.2 A11（纠错后再次跑同一 input_sha256 → 字段不被覆盖；agent_run 记 rejected(R_LOCKED)）",
+    "详细设计 §5.1 V07 / §4.4 幂等键（field_override 存在 → 拒绝覆盖）",
+    "详细设计 §9 纠错语义（Correction：belongs_to_me / lifecycle / reason）"
+  ],
+  "harness": {
+    "agent_mode": "mock",
+    "dws_mode": "mock",
+    "egress": "none（mock 判读在本地内存完成，无真实出域）"
+  },
+  "me": { "user_id": "U_ZHANGSAN", "display_name": "张三", "employee_no": "E1024" },
+  "persons": {
+    "U_ZHANGSAN": { "display_name": "张三", "is_me": true },
+    "U_QIAN_MANAGER": { "display_name": "钱经理" },
+    "U_LISI": { "display_name": "李四", "note": "实际接手人（口头移交，未在消息中体现）" }
+  },
+  "conversations": {
+    "dm-qian-manager": { "type": "dm", "display_name": "私聊·钱经理", "peer": "U_QIAN_MANAGER" }
+  },
+  "sources": [
+    {
+      "id": "src-dm-qian",
+      "kind": "dws_im",
+      "display_name": "钉钉私聊·钱经理",
+      "scope": { "conversation_ids": ["dm-qian-manager"] },
+      "enabled": true,
+      "authorized_at": "2026-11-01T09:00:00+08:00"
+    }
+  ],
+  "clock": {
+    "now": "2026-11-21T09:50:00+08:00",
+    "note": "北京时间业务时段；入库时转 UTC 毫秒"
+  },
+  "stages": [
+    {
+      "index": 1,
+      "description": "误判发生：钱经理私聊安排（锚点合法），mock 判读建了本人事项；实际已口头改由李四接手",
+      "clock_at": "2026-11-21T09:30:00+08:00",
+      "records": [
+        {
+          "external_id": "A11-R1",
+          "source_id": "src-dm-qian",
+          "kind": "im_message",
+          "occurred_at": "2026-11-21T09:10:00+08:00",
+          "ingested_at": "2026-11-21T09:12:00+08:00",
+          "conversation_id": "dm-qian-manager",
+          "sender_id": "U_QIAN_MANAGER",
+          "sender_name": "钱经理",
+          "direction": "in",
+          "mentions": [],
+          "reply_to": null,
+          "summary": "钱经理私聊让张三跟进二期图纸复核推广（消息层面归属锚点成立）",
+          "body": "张三，二期的图纸复核推广接下来你跟进吧。"
+        }
+      ],
+      "human_actions": []
+    },
+    {
+      "index": 2,
+      "description": "人工纠错：用户选「不是我的任务」，写 field_override 并移出本人关注",
+      "clock_at": "2026-11-21T09:40:00+08:00",
+      "records": [],
+      "human_actions": [
+        {
+          "op": "item_correct",
+          "item_origin_record": "A11-R1",
+          "patch": { "belongs_to_me": false, "lifecycle": "ignored" },
+          "reason": "not_mine",
+          "note": "已口头改由李四接手推进，消息里没有体现"
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "description": "重复判读：对同一 input_sha256 重跑判读（judge_retry），人工锁必须拒绝覆盖，事项不得被静默恢复",
+      "clock_at": "2026-11-21T09:50:00+08:00",
+      "records": [],
+      "human_actions": [
+        { "op": "judge_retry", "records": ["A11-R1"] }
+      ]
+    }
+  ],
+  "mock_judgement_intent": [
+    "A11-R1：mock 判读 classification=followup、belongs_to_me=yes、attention=me（私聊 direction=in，锚点合法，判读层面无法识别口头移交）——这是需要人工纠正的「合理误判」"
+  ],
+  "redaction_note": "所有人名、会话、系统均为脱敏合成数据。"
+}

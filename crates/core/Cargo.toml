@@ -1,0 +1,16 @@
+[package]
+name = "workcontext-core"
+description = "领域核心：实体、状态机、规则校验与 DTO（零 IO）"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+# 以下仅做纯计算（时间解析 / 哈希 / NFC 归一化），不引入 IO；
+# core 禁止依赖 tokio / rusqlite（详细设计 §1）。
+chrono = { version = "0.4", default-features = false, features = ["std"] }
+sha2 = "0.10"
+unicode-normalization = "0.1"

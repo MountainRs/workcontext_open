@@ -1,0 +1,19 @@
+[package]
+name = "workcontext-app"
+description = "用例服务：today / item / ingest / snapshot / diagnostics"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+workcontext-core = { workspace = true }
+workcontext-store = { workspace = true }
+workcontext-infra = { path = "../infra" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tempfile = "3"
+# 仅做 RFC3339 → UTC 毫秒的纯计算（与 core 同一配置），不引入 IO。
+# 判读落库：agent_run.output_sha256 / source_record.content_hash（与 core/infra 同一算法族）。
+sha2 = "0.10"
+chrono = { version = "0.4", default-features = false, features = ["std"] }

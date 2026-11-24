@@ -1,0 +1,24 @@
+{
+  "belongs_to_me": "yes",
+  "classification": "followup",
+  "confidence": 78,
+  "current_turn": "me",
+  "evidence": [
+    "A11-R1"
+  ],
+  "followup": {
+    "at": null,
+    "basis": null,
+    "type": "none"
+  },
+  "needs_action": true,
+  "next_action": "推进二期图纸复核推广并适时向钱经理汇报",
+  "rationale": "钱经理私聊点名本人跟进二期图纸复核推广，消息层面归属锚点成立；判读层无法获知已口头移交李四，属需人工纠正的合理误判。",
+  "related_hint": null,
+  "schema_version": "classify/v1",
+  "source_ids": [
+    "A11-R1"
+  ],
+  "suggested_title": "跟进二期图纸复核推广",
+  "uncertainties": []
+}

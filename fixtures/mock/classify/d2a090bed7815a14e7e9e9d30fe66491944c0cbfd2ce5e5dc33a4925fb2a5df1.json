@@ -1,0 +1,26 @@
+{
+  "belongs_to_me": "yes",
+  "classification": "followup",
+  "confidence": 82,
+  "current_turn": "me",
+  "evidence": [
+    "A01-R1",
+    "A01-R2"
+  ],
+  "followup": {
+    "at": null,
+    "basis": null,
+    "type": "none"
+  },
+  "needs_action": true,
+  "next_action": "联系供应商确认报错原因",
+  "rationale": "交办人私聊要求本人跟进图纸打印模板报错，本人已承诺先联系供应商确认原因，下一步在本人。",
+  "related_hint": null,
+  "schema_version": "classify/v1",
+  "source_ids": [
+    "A01-R1",
+    "A01-R2"
+  ],
+  "suggested_title": "跟进图纸打印模板报错",
+  "uncertainties": []
+}

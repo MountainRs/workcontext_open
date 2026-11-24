@@ -1,0 +1,7 @@
+# Offline Windows archive readers; create the repository .venv with Python 3.12.
+# uv venv --python 3.12 .venv
+# uv pip sync --python .venv/Scripts/python.exe scripts/requirements-archive.txt
+pypdf==7.1.1
+legacy-doc==0.2.1
+xlrd==2.0.2
+olefile==0.47

@@ -1,0 +1,36 @@
+{
+  "conversation": {
+    "display_name": "私聊·李经理",
+    "id": "dm-li-manager",
+    "type": "dm"
+  },
+  "kind": "classify",
+  "me": {
+    "display_name": "张三",
+    "user_id": "U_ZHANGSAN"
+  },
+  "participants": [
+    {
+      "display_name": "李经理",
+      "user_id": "U_LI_MANAGER"
+    }
+  ],
+  "prompt_version": "classify/v1",
+  "records": [
+    {
+      "body": "已经联系过供应商了，是打印服务的模板损坏，他们正在处理，等更换完成我第一时间同步您。",
+      "direction": "out",
+      "id": "A01-R3",
+      "mentions": [],
+      "occurred_at": "2026-11-20T11:40:00+08:00",
+      "reply_to": "A01-R2",
+      "sender_id": "U_ZHANGSAN",
+      "sender_name": "张三"
+    }
+  ],
+  "schema_version": "classify-input/v1",
+  "source": {
+    "id": "src-dm-li",
+    "kind": "dws_im"
+  }
+}

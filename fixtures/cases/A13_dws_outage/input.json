@@ -1,0 +1,113 @@
+{
+  "schema_version": "case/v1",
+  "case_id": "A13",
+  "title": "DWS 失联：同步 401/超时，明示数据可能不完整，缓存可读，不称「无人回复」",
+  "prd_refs": [
+    "PRD §12 A13（V0.1 横向必过）",
+    "PRD §6.3（DWS 未查到回复 ≠ 对方没有回复；必须展示上次同步成功时间及范围）",
+    "PRD §13.2-6（展示上次成功同步时间与错误/权限状态；不能写成「对方未回复」的确定事实）",
+    "详细设计 §16.2 A13（mock 适配器抛 401/超时；UI 文案不含「未回复」断言；缓存可读；新鲜度显示）",
+    "详细设计 §6.2 同步硬规则（401→auth_required 不清游标；连续 5 次失败→degraded）"
+  ],
+  "harness": {
+    "agent_mode": "mock",
+    "dws_mode": "mock（带故障注入：按 stage 的 sync.attempts 返回错误）",
+    "egress": "none（本用例无判读发生）"
+  },
+  "me": { "user_id": "U_ZHANGSAN", "display_name": "张三", "employee_no": "E1024" },
+  "persons": {
+    "U_ZHANGSAN": { "display_name": "张三", "is_me": true },
+    "U_WANG_VENDOR": { "display_name": "王工", "note": "供应商工程师" }
+  },
+  "conversations": {
+    "dm-wang-vendor": { "type": "dm", "display_name": "私聊·王工（供应商）", "peer": "U_WANG_VENDOR" }
+  },
+  "sources": [
+    {
+      "id": "src-dm-vendor",
+      "kind": "dws_im",
+      "display_name": "钉钉私聊·王工（供应商）",
+      "scope": { "conversation_ids": ["dm-wang-vendor"] },
+      "enabled": true,
+      "authorized_at": "2026-11-01T09:00:00+08:00"
+    }
+  ],
+  "clock": {
+    "now": "2026-11-20T09:30:00+08:00",
+    "note": "北京时间业务时段；入库时转 UTC 毫秒"
+  },
+  "prelude": {
+    "description": "案发前状态：昨日一次成功同步，已入库并判读一条供应商私聊，存在一条「等他人」的活跃事项；checkpoint 停在 idle",
+    "records": [
+      {
+        "external_id": "A13-R0",
+        "source_id": "src-dm-vendor",
+        "kind": "im_message",
+        "occurred_at": "2026-11-19T16:00:00+08:00",
+        "ingested_at": "2026-11-19T16:02:00+08:00",
+        "conversation_id": "dm-wang-vendor",
+        "sender_id": "U_WANG_VENDOR",
+        "sender_name": "王工",
+        "direction": "in",
+        "mentions": [],
+        "reply_to": null,
+        "summary": "供应商已安排模板更换，次日给结果",
+        "body": "模板更换我们已经安排了，明天下午给你结果。",
+        "judge_state": "judged"
+      }
+    ],
+    "seed_items": [
+      {
+        "identity": { "origin_record": "A13-R0", "intent_class": "followup" },
+        "title": "等供应商同步模板更换结果",
+        "lifecycle": "active",
+        "attention": "waiting_other",
+        "current_turn": "other",
+        "next_action": "等王工同步模板更换结果后，继续处理图纸打印模板问题",
+        "followup_type": "none",
+        "followup_at": null,
+        "awaiting_confirmation": false
+      }
+    ],
+    "checkpoint": {
+      "source_id": "src-dm-vendor",
+      "state": "idle",
+      "last_success_at": "2026-11-19T16:05:00+08:00",
+      "cursor": { "opaque": "cur-20261119-1605" },
+      "consecutive_failures": 0
+    }
+  },
+  "stages": [
+    {
+      "index": 1,
+      "description": "晨间首次同步：DWS 返回 401，授权失效 → auth_required，不重试、不清游标",
+      "clock_at": "2026-11-20T09:00:00+08:00",
+      "records": [],
+      "sync": {
+        "attempts": [
+          { "outcome": "error", "error_code": "AUTH_REQUIRED", "http_status": 401 }
+        ]
+      },
+      "human_actions": []
+    },
+    {
+      "index": 2,
+      "description": "用户重新授权后连续 5 次同步超时 → 连续 5 次失败进入 degraded，停止自动重试，等待手动重试",
+      "clock_at": "2026-11-20T09:30:00+08:00",
+      "records": [],
+      "sync": {
+        "attempts": [
+          { "outcome": "error", "error_code": "TIMEOUT" },
+          { "outcome": "error", "error_code": "TIMEOUT" },
+          { "outcome": "error", "error_code": "TIMEOUT" },
+          { "outcome": "error", "error_code": "TIMEOUT" },
+          { "outcome": "error", "error_code": "TIMEOUT" }
+        ]
+      },
+      "human_actions": [
+        { "op": "source_reauthorize", "source_id": "src-dm-vendor" }
+      ]
+    }
+  ],
+  "redaction_note": "所有人名、会话、系统均为脱敏合成数据。"
+}

@@ -1,0 +1,24 @@
+{
+  "belongs_to_me": "no",
+  "classification": "info",
+  "confidence": 86,
+  "current_turn": "none",
+  "evidence": [
+    "A06-R2"
+  ],
+  "followup": {
+    "at": null,
+    "basis": null,
+    "type": "none"
+  },
+  "needs_action": false,
+  "next_action": null,
+  "rationale": "孙经理答复本人提问：卡顿与图纸库超时同因，已安排李四负责排查并明确本人不用跟进；仅信息，不建事项。",
+  "related_hint": null,
+  "schema_version": "classify/v1",
+  "source_ids": [
+    "A06-R2"
+  ],
+  "suggested_title": "图纸库卡顿原因说明（李四负责排查）",
+  "uncertainties": []
+}

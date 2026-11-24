@@ -1,0 +1,14 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "WorkContext Dev",
+  "identifier": "com.local.workcontext.dev",
+  "build": {
+    "beforeDevCommand": "pnpm -C ui dev --port 1421",
+    "devUrl": "http://127.0.0.1:1421"
+  },
+  "app": {
+    "security": {
+      "devCsp": "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; connect-src 'self' ipc: http://ipc.localhost ws://127.0.0.1:1421"
+    }
+  }
+}

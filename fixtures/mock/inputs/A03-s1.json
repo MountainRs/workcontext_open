@@ -1,0 +1,50 @@
+{
+  "conversation": {
+    "display_name": "图纸协作群",
+    "id": "grp-report-tool",
+    "type": "group"
+  },
+  "kind": "classify",
+  "me": {
+    "display_name": "张三",
+    "user_id": "U_ZHANGSAN"
+  },
+  "participants": [
+    {
+      "display_name": "赵六",
+      "user_id": "U_ZHAOLIU"
+    }
+  ],
+  "prompt_version": "classify/v1",
+  "records": [
+    {
+      "body": "@张三 麻烦帮忙开一下 11 月图纸目录的下载权限，下午要用。",
+      "direction": "in",
+      "id": "A03-R1",
+      "mentions": [
+        "U_ZHANGSAN"
+      ],
+      "occurred_at": "2026-11-21T10:05:00+08:00",
+      "reply_to": null,
+      "sender_id": "U_ZHAOLIU",
+      "sender_name": "赵六"
+    },
+    {
+      "body": "ok了，已开通下载权限，你试试看。",
+      "direction": "out",
+      "id": "A03-R2",
+      "mentions": [
+        "U_ZHAOLIU"
+      ],
+      "occurred_at": "2026-11-21T10:12:00+08:00",
+      "reply_to": "A03-R1",
+      "sender_id": "U_ZHANGSAN",
+      "sender_name": "张三"
+    }
+  ],
+  "schema_version": "classify-input/v1",
+  "source": {
+    "id": "src-grp-report",
+    "kind": "dws_im"
+  }
+}

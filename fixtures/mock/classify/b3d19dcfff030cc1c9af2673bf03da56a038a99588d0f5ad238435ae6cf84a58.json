@@ -1,0 +1,33 @@
+{
+  "belongs_to_me": "yes",
+  "classification": "followup",
+  "confidence": 74,
+  "current_turn": "none",
+  "evidence": [
+    "A01-R5"
+  ],
+  "followup": {
+    "at": null,
+    "basis": null,
+    "type": "none"
+  },
+  "needs_action": false,
+  "next_action": null,
+  "rationale": "交办人对收尾提议回复「好的」，本人已无剩余动作，判读提议关闭事项；「好的」仅为确认回复，是否构成收尾证据交由收尾证据白名单校验。",
+  "related_hint": null,
+  "resolution": {
+    "evidence_ids": [
+      "A01-R5"
+    ],
+    "evidence_type": "ack_only",
+    "note": "「好的」仅为确认性回复（ack_only），按收尾证据白名单不足以自动收尾，建议转人工确认"
+  },
+  "schema_version": "classify/v1",
+  "source_ids": [
+    "A01-R5"
+  ],
+  "suggested_title": "跟进图纸打印模板报错（等交办人确认收尾）",
+  "uncertainties": [
+    "「好的」属于仅确认回复，按收尾证据白名单不得自动收尾，需转人工确认"
+  ]
+}

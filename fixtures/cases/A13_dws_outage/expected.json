@@ -1,0 +1,110 @@
+{
+  "schema_version": "case-expected/v1",
+  "case_id": "A13",
+  "assertion_basis": [
+    "PRD §12 A13（V0.1 横向必过）：明示数据可能不完整，仍能查看缓存，不称「无人回复」",
+    "PRD §6.3：DWS 未查到回复 ≠ 对方一定没有回复；必须展示上次同步成功时间及范围",
+    "PRD §13.2-6：展示上次成功同步时间与错误/权限状态",
+    "详细设计 §16.2 A13：UI 文案不含「未回复」断言；缓存可读；新鲜度显示",
+    "详细设计 §6.2：401/403 → auth_required，不重试不清游标；连续 5 次失败 → degraded 停止自动重试",
+    "详细设计 §11.6 文案规则：禁止「对方未回复」断言；改为「等待对方回复（最后同步 …）」"
+  ],
+  "assertion_scope": "只断言业务语义字段；不断言生成 ID、时间戳、content_hash、input_sha256",
+  "stages": [
+    {
+      "index": 1,
+      "checkpoint": {
+        "source_id": "src-dm-vendor",
+        "state": "auth_required",
+        "last_success_at": "2026-11-19T16:05:00+08:00",
+        "last_success_at_unchanged": true,
+        "cursor_unchanged": true
+      },
+      "sync_runs": { "failed": 1, "last_error_code": "AUTH_REQUIRED" },
+      "items": [
+        {
+          "identity": { "origin_record": "A13-R0" },
+          "same_item_as_prelude": true,
+          "lifecycle": "active",
+          "attention": "waiting_other",
+          "current_turn": "other",
+          "next_action_nonempty": true,
+          "followup_type": "none",
+          "awaiting_confirmation": false,
+          "today": { "visible": true, "group": "waiting_other" },
+          "note": "缓存可读：同步失败不阻断本地浏览（PRD §9.2 离线可浏览）"
+        }
+      ],
+      "item_count": 1,
+      "source_records_unchanged": true,
+      "ui_copy": {
+        "forbidden_contains": ["未回复", "无人回复"],
+        "must_show_last_success_at": true,
+        "must_show_auth_state": true,
+        "suggested_wording": "数据可能不完整（最后成功同步 2026-11-19 16:05）；授权已失效，请重新授权"
+      }
+    },
+    {
+      "index": 2,
+      "checkpoint": {
+        "source_id": "src-dm-vendor",
+        "state": "degraded",
+        "consecutive_failures": 5,
+        "last_success_at": "2026-11-19T16:05:00+08:00",
+        "last_success_at_unchanged": true,
+        "cursor_unchanged": true,
+        "auto_retry_stopped": true
+      },
+      "sync_runs": { "failed_total": 6, "last_error_code": "TIMEOUT" },
+      "items": [
+        {
+          "identity": { "origin_record": "A13-R0" },
+          "same_item_as_prelude": true,
+          "lifecycle": "active",
+          "attention": "waiting_other",
+          "next_action_nonempty": true,
+          "today": { "visible": true, "group": "waiting_other" },
+          "note": "事项状态不得因同步失败被篡改：不新建、不关闭、不改归属"
+        }
+      ],
+      "item_count": 1,
+      "source_records_unchanged": true,
+      "ui_copy": {
+        "forbidden_contains": ["未回复", "无人回复"],
+        "must_show_last_success_at": true,
+        "must_offer_manual_retry": true,
+        "suggested_wording": "等待对方回复（最后同步 2026-11-19 16:05，数据可能不完整）"
+      }
+    }
+  ],
+  "final": {
+    "item_count": 1,
+    "counts": { "active": 1, "candidate": 0, "closed": 0, "ignored": 0 },
+    "items": [
+      {
+        "identity": { "origin_record": "A13-R0" },
+        "lifecycle": "active",
+        "attention": "waiting_other",
+        "today": { "visible": true, "group": "waiting_other" }
+      }
+    ],
+    "checkpoint": {
+      "state": "degraded",
+      "consecutive_failures": 5,
+      "last_success_at": "2026-11-19T16:05:00+08:00",
+      "cursor_unchanged": true
+    },
+    "forbidden": {
+      "fabricated_reply_fact": "任何用户可见文案不得包含「未回复/无人回复」等确定性断言（未获取 ≠ 未发生）",
+      "cursor_reset": "失败期间游标不得推进或清空（否则恢复后漏拉）",
+      "item_mutation": "同步失败不得产生任何事项变更（新建/关闭/改归属/改状态均违规，PRD §13.2-7 精神）"
+    },
+    "forbidden_strings_in_ui": ["未回复", "无人回复", "已自动完成"]
+  },
+  "notes": [
+    "本用例不发生判读：断言对象是 sync_checkpoint / sync_run / 缓存读取与 UI 文案约束，供 B3 同步引擎与 B4 StatusBar 共用。",
+    "两条故障路径分开验证：401 → auth_required（不重试、不清游标）；超时连续 5 次 → degraded（停止自动重试，UI 给手动重试）。退避序列 1/4/16/60/300s ±20% 由实现保证，夹具不断言具体间隔。",
+    "「等他人」事项在失联期间必须仍可查看，且搭配新鲜度（最后成功同步时间）展示——这是 B3 完成判据「UI 文案不出现『未回复』断言，显示『最后成功同步时间』」的夹具依据。",
+    "waiting_other 条目渲染必须带 last_success_at（详细设计 B4：没有 last_success_at 不允许渲染 waiting_other 条目）。"
+  ]
+}

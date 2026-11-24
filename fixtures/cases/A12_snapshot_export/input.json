@@ -1,0 +1,105 @@
+{
+  "schema_version": "case/v1",
+  "case_id": "A12",
+  "title": "迭代快照：对误判记录问题并导出（含期望/版本/引用，默认脱敏）",
+  "prd_refs": [
+    "PRD §12 A12（V0.1 横向必过：包含最小可复现证据、期望、应用版本；敏感内容受控）",
+    "PRD §11.2 快照内容 / §10.2 迭代池导出脱敏要求",
+    "PRD §13.2-9（问题快照能写入并导出 Markdown/JSON，附软件版本）",
+    "详细设计 §16.2 A12（含期望、版本、引用；默认脱敏；不含完整对话）",
+    "详细设计 §7.3 脱敏规则（手机号脱敏）"
+  ],
+  "harness": {
+    "agent_mode": "mock",
+    "dws_mode": "mock",
+    "egress": "none（mock 判读在本地内存完成，无真实出域）",
+    "app_version": "0.1.x（harness 注入，导出断言用前缀 0.1. 匹配）"
+  },
+  "me": { "user_id": "U_ZHANGSAN", "display_name": "张三", "employee_no": "E1024" },
+  "persons": {
+    "U_ZHANGSAN": { "display_name": "张三", "is_me": true },
+    "U_SUN_ASSIST": { "display_name": "孙助理" }
+  },
+  "conversations": {
+    "dm-sun-assist": { "type": "dm", "display_name": "私聊·孙助理", "peer": "U_SUN_ASSIST" }
+  },
+  "sources": [
+    {
+      "id": "src-dm-sun",
+      "kind": "dws_im",
+      "display_name": "钉钉私聊·孙助理",
+      "scope": { "conversation_ids": ["dm-sun-assist"] },
+      "enabled": true,
+      "authorized_at": "2026-11-01T09:00:00+08:00"
+    }
+  ],
+  "clock": {
+    "now": "2026-11-21T14:25:00+08:00",
+    "note": "北京时间业务时段；入库时转 UTC 毫秒"
+  },
+  "stages": [
+    {
+      "index": 1,
+      "description": "误判发生：停机维护通知（仅需知悉）被 mock 误判为需要跟进的事项",
+      "clock_at": "2026-11-21T14:10:00+08:00",
+      "records": [
+        {
+          "external_id": "A12-R1",
+          "source_id": "src-dm-sun",
+          "kind": "im_message",
+          "occurred_at": "2026-11-21T14:00:00+08:00",
+          "ingested_at": "2026-11-21T14:02:00+08:00",
+          "conversation_id": "dm-sun-assist",
+          "sender_id": "U_SUN_ASSIST",
+          "sender_name": "孙助理",
+          "direction": "in",
+          "mentions": [],
+          "reply_to": null,
+          "summary": "工单系统停机维护通知，仅需知悉；正文含值班电话",
+          "body": "通知：工单系统今晚 22:00-24:00 停机维护，你知悉就行。有问题可联系值班电话 13800001234。",
+          "body_masked": "通知：工单系统今晚 22:00-24:00 停机维护，你知悉就行。有问题可联系值班电话 138****1234。"
+        }
+      ],
+      "human_actions": []
+    },
+    {
+      "index": 2,
+      "description": "一键记录问题快照（spurious_item）并对事项执行「只是信息」纠错",
+      "clock_at": "2026-11-21T14:20:00+08:00",
+      "records": [],
+      "human_actions": [
+        {
+          "op": "snapshot_create",
+          "route": "/today",
+          "target_type": "work_item",
+          "item_origin_record": "A12-R1",
+          "kind": "spurious_item",
+          "severity": "medium",
+          "description": "这只是停机维护通知，不需要我跟进，不应该生成待办",
+          "expected": "识别为仅信息（info），不建事项，只保留来源记录"
+        },
+        {
+          "op": "item_correct",
+          "item_origin_record": "A12-R1",
+          "patch": { "lifecycle": "ignored" },
+          "reason": "just_info",
+          "note": "只是信息"
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "description": "导出快照：Markdown + JSON 两种格式，includeBody 默认 false（不勾选正文）",
+      "clock_at": "2026-11-21T14:25:00+08:00",
+      "records": [],
+      "human_actions": [
+        { "op": "snapshot_export", "snapshot_from_stage": 2, "format": "json", "include_body": false },
+        { "op": "snapshot_export", "snapshot_from_stage": 2, "format": "md", "include_body": false }
+      ]
+    }
+  ],
+  "mock_judgement_intent": [
+    "A12-R1：mock 判读 classification=followup、belongs_to_me=yes、attention=me（把「知悉即可」的通知误判为需跟进事项）——属于 spurious_item（不该建的事项）"
+  ],
+  "redaction_note": "所有人名、电话、系统均为脱敏合成数据；13800001234 为标准假号码，仅用于验证脱敏断言。"
+}

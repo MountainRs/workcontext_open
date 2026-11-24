@@ -1,0 +1,62 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "WorkContext",
+  "version": "0.1.0",
+  "identifier": "com.local.workcontext",
+  "build": {
+    "beforeDevCommand": "pnpm -C ui dev",
+    "devUrl": "http://127.0.0.1:1420",
+    "beforeBuildCommand": "pnpm -C ui build",
+    "frontendDist": "../../ui/dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "WorkContext",
+        "backgroundColor": "#e7ede8",
+        "titleBarStyle": "Transparent",
+        "theme": "Light",
+        "width": 1200,
+        "height": 800,
+        "minWidth": 960,
+        "minHeight": 640
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; connect-src ipc: http://ipc.localhost"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis", "dmg", "app"],
+    "resources": {
+      "../../scripts/ownership_review.py": "archive-worker/ownership_review.py",
+      "../../scripts/context_organize.py": "archive-worker/context_organize.py",
+      "../../scripts/ownership_source.py": "archive-worker/ownership_source.py",
+      "../../scripts/conversation_review.py": "archive-worker/conversation_review.py",
+      "../../fixtures/conversation_review_prompts.json": "fixtures/conversation_review_prompts.json",
+      "../../scripts/archive_sync.py": "archive-worker/archive_sync.py",
+      "../../scripts/capture_details.py": "archive-worker/capture_details.py",
+      "../../scripts/archive_documents.py": "archive-worker/archive_documents.py",
+      "../../scripts/archive_media.py": "archive-worker/archive_media.py",
+      "../../scripts/archive_media_extract.py": "archive-worker/archive_media_extract.py",
+      "../../scripts/archive_media_extract.swift": "archive-worker/archive_media_extract.swift"
+    },
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/icon.ico"
+    ],
+    "windows": {
+      "webviewInstallMode": { "type": "embedBootstrapper", "silent": true },
+      "nsis": {
+        "installMode": "currentUser"
+      }
+    },
+    "macOS": {
+      "minimumSystemVersion": "11.0",
+      "hardenedRuntime": true
+    }
+  }
+}

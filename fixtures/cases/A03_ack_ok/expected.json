@@ -1,0 +1,67 @@
+{
+  "schema_version": "case-expected/v1",
+  "case_id": "A03",
+  "assertion_basis": [
+    "PRD §12 A03（V0.1 必过）：不产生永久悬挂事项，可建议本次收尾",
+    "PRD §2.2 零负担优先：钉钉内已闭环的小事不要求二次输入",
+    "PRD §6.1 R05：轻事务有明确完成证据时可建议归档",
+    "详细设计 §16.2 A03：不产生悬挂事项；classification=one_off + needs_action=false",
+    "详细设计 §3.4：one_off + belongs_to_me=yes → 建 candidate；needs_action=false → 直接 ignored(no_action)"
+  ],
+  "assertion_scope": "只断言业务语义字段；不断言生成 ID、时间戳、content_hash、input_sha256",
+  "stages": [
+    {
+      "index": 1,
+      "records": [
+        { "external_id": "A03-R1", "prefilter": "keep", "prefilter_reason": "at_me", "judge_state": "judged" },
+        { "external_id": "A03-R2", "prefilter": "keep", "prefilter_reason": "my_reply", "judge_state": "judged" }
+      ],
+      "agent_runs": [
+        {
+          "records": ["A03-R1", "A03-R2"],
+          "status": "ok",
+          "intent_class": "one_off",
+          "belongs_to_me": "yes",
+          "needs_action": false,
+          "followup_type": "none",
+          "note": "请求与完成在同一会话相邻消息，合并为一次判读（详细设计 §7.1）"
+        }
+      ],
+      "items": [
+        {
+          "identity": { "origin_record": "A03-R1", "intent_class": "one_off" },
+          "title_contains": ["下载权限"],
+          "lifecycle": "ignored",
+          "ignore_reason_nonempty": true,
+          "expected_ignore_reason": "no_action",
+          "awaiting_confirmation": false,
+          "today": { "visible": false },
+          "note": "§3.4：one_off 且 needs_action=false → 直接 ignored(no_action)；轻事务不得进待确认，也不得悬挂为 active/candidate"
+        }
+      ],
+      "item_count": 1
+    }
+  ],
+  "final": {
+    "item_count": 1,
+    "counts": { "active": 0, "candidate": 0, "closed": 0, "ignored": 1 },
+    "items": [
+      {
+        "identity": { "origin_record": "A03-R1" },
+        "lifecycle": "ignored",
+        "today": { "visible": false }
+      }
+    ],
+    "forbidden": {
+      "hanging_item": "结束时不得存在 lifecycle∈{active,candidate} 且源于本会话的事项（悬挂即失败）",
+      "awaiting_confirmation": "轻事务完成闭环不得进入待确认（awaiting_confirmation 必须为 0）"
+    },
+    "forbidden_strings_in_ui": ["已自动完成", "对方未回复"]
+  },
+  "notes": [
+    "归属锚点：群消息正文 @我（A03-R1 mentions 含本人）满足 V03 ②，belongs_to_me=yes 合法。",
+    "「ok了，已开通」是本人完成声明：判读应为 one_off + needs_action=false（无剩余行动），按 §3.4 映射为 ignored(no_action)，同时保留 link_evidence(origin → A03-R1) 供追溯。",
+    "断言 item_count=1 而非 0：§3.4 规定先建 candidate 再直接置 ignored(no_action)，痕迹保留但今日页/待办不出现。",
+    "预筛路径覆盖：at_me（R1）与 my_reply（R2）两条 keep 规则。"
+  ]
+}

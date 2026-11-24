@@ -1,0 +1,31 @@
+{
+  "belongs_to_me": "yes",
+  "classification": "followup",
+  "confidence": 84,
+  "current_turn": "other",
+  "evidence": [
+    "A01-R4"
+  ],
+  "followup": {
+    "at": null,
+    "basis": null,
+    "type": "none"
+  },
+  "needs_action": false,
+  "next_action": "等交办人确认后收尾图纸打印模板问题",
+  "rationale": "本人已反馈模板更换完成、业务重试正常并提议收尾；处理动作已做完，仅待交办人确认验收。",
+  "related_hint": null,
+  "resolution": {
+    "evidence_ids": [
+      "A01-R4"
+    ],
+    "evidence_type": "explicit_complete",
+    "note": "本人声明完成并提议收尾，等交办人确认"
+  },
+  "schema_version": "classify/v1",
+  "source_ids": [
+    "A01-R4"
+  ],
+  "suggested_title": "跟进图纸打印模板报错（等交办人确认收尾）",
+  "uncertainties": []
+}

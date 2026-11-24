@@ -1,0 +1,36 @@
+{
+  "conversation": {
+    "display_name": "私聊·李经理",
+    "id": "dm-li-manager",
+    "type": "dm"
+  },
+  "kind": "classify",
+  "me": {
+    "display_name": "张三",
+    "user_id": "U_ZHANGSAN"
+  },
+  "participants": [
+    {
+      "display_name": "李经理",
+      "user_id": "U_LI_MANAGER"
+    }
+  ],
+  "prompt_version": "classify/v1",
+  "records": [
+    {
+      "body": "好的",
+      "direction": "in",
+      "id": "A01-R5",
+      "mentions": [],
+      "occurred_at": "2026-11-20T15:20:00+08:00",
+      "reply_to": "A01-R4",
+      "sender_id": "U_LI_MANAGER",
+      "sender_name": "李经理"
+    }
+  ],
+  "schema_version": "classify-input/v1",
+  "source": {
+    "id": "src-dm-li",
+    "kind": "dws_im"
+  }
+}

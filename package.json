@@ -1,0 +1,17 @@
+{
+  "name": "personal-ai-workbench",
+  "private": true,
+  "version": "0.1.0",
+  "description": "个人AI工作台 monorepo 根（前端 workspace；桌面端由 desktop crate 提供）",
+  "scripts": {
+    "dev": "tauri dev --config crates/desktop/tauri.dev.conf.json",
+    "dev:web": "pnpm -C ui dev",
+    "build": "pnpm -C ui build",
+    "test": "pnpm -C ui test",
+    "e2e": "pnpm -C ui e2e",
+    "tauri": "tauri"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2"
+  }
+}

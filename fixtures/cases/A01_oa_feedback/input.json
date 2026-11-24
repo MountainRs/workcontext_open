@@ -1,0 +1,164 @@
+{
+  "schema_version": "case/v1",
+  "case_id": "A01",
+  "title": "图纸打印反馈闭环（基础状态流转）",
+  "prd_refs": [
+    "PRD §12 A01（V0.1 基础版：至少保留「等别人 / 下一步 / 已收尾」并可纠错）",
+    "PRD §1.3 B01（先等第三方回复，之后向交办人反馈并收到「好的」）",
+    "PRD §13.2-1/2/3",
+    "详细设计 §16.2 A01（dm_in → followup → 回复 → 关闭；关闭需证据）",
+    "详细设计 §3.3 收尾证据白名单（ack_only 不允许收尾）",
+    "详细设计 §5.1 V05"
+  ],
+  "harness": {
+    "agent_mode": "mock",
+    "dws_mode": "mock",
+    "egress": "none（mock 判读在本地内存完成，无真实出域）"
+  },
+  "me": { "user_id": "U_ZHANGSAN", "display_name": "张三", "employee_no": "E1024" },
+  "persons": {
+    "U_ZHANGSAN": { "display_name": "张三", "is_me": true },
+    "U_LI_MANAGER": { "display_name": "李经理" }
+  },
+  "conversations": {
+    "dm-li-manager": { "type": "dm", "display_name": "私聊·李经理", "peer": "U_LI_MANAGER" }
+  },
+  "sources": [
+    {
+      "id": "src-dm-li",
+      "kind": "dws_im",
+      "display_name": "钉钉私聊·李经理",
+      "scope": { "conversation_ids": ["dm-li-manager"] },
+      "enabled": true,
+      "authorized_at": "2026-11-01T09:00:00+08:00"
+    }
+  ],
+  "clock": {
+    "now": "2026-11-20T15:30:00+08:00",
+    "note": "北京时间业务时段；入库时转 UTC 毫秒"
+  },
+  "stages": [
+    {
+      "index": 1,
+      "description": "交办：李经理私聊要求跟进图纸打印模板报错，本人承诺先联系供应商",
+      "clock_at": "2026-11-20T09:20:00+08:00",
+      "records": [
+        {
+          "external_id": "A01-R1",
+          "source_id": "src-dm-li",
+          "kind": "im_message",
+          "occurred_at": "2026-11-20T09:12:00+08:00",
+          "ingested_at": "2026-11-20T09:14:00+08:00",
+          "conversation_id": "dm-li-manager",
+          "sender_id": "U_LI_MANAGER",
+          "sender_name": "李经理",
+          "direction": "in",
+          "mentions": [],
+          "reply_to": null,
+          "summary": "交办人要求跟进图纸打印模板报错，先找供应商确认原因",
+          "body": "图纸打印模板那个报错，你跟一下，先找供应商确认原因。"
+        },
+        {
+          "external_id": "A01-R2",
+          "source_id": "src-dm-li",
+          "kind": "im_message",
+          "occurred_at": "2026-11-20T09:15:00+08:00",
+          "ingested_at": "2026-11-20T09:16:00+08:00",
+          "conversation_id": "dm-li-manager",
+          "sender_id": "U_ZHANGSAN",
+          "sender_name": "张三",
+          "direction": "out",
+          "mentions": [],
+          "reply_to": null,
+          "summary": "本人承诺先联系供应商确认，有结果向交办人反馈",
+          "body": "好的，我先联系供应商确认，有结果第一时间向您反馈。"
+        }
+      ],
+      "human_actions": []
+    },
+    {
+      "index": 2,
+      "description": "转等第三方：本人已联系供应商（模板损坏、处理中），等待更换完成",
+      "clock_at": "2026-11-20T11:45:00+08:00",
+      "records": [
+        {
+          "external_id": "A01-R3",
+          "source_id": "src-dm-li",
+          "kind": "im_message",
+          "occurred_at": "2026-11-20T11:40:00+08:00",
+          "ingested_at": "2026-11-20T11:42:00+08:00",
+          "conversation_id": "dm-li-manager",
+          "sender_id": "U_ZHANGSAN",
+          "sender_name": "张三",
+          "direction": "out",
+          "mentions": [],
+          "reply_to": { "external_id": "A01-R2", "sender_id": "U_ZHANGSAN" },
+          "summary": "供应商确认模板损坏，正在处理，完成后本人同步交办人",
+          "body": "已经联系过供应商了，是打印服务的模板损坏，他们正在处理，等更换完成我第一时间同步您。"
+        }
+      ],
+      "human_actions": []
+    },
+    {
+      "index": 3,
+      "description": "结果回报：模板更换完成、业务重试正常，本人提议此事收尾，等交办人确认",
+      "clock_at": "2026-11-20T15:10:00+08:00",
+      "records": [
+        {
+          "external_id": "A01-R4",
+          "source_id": "src-dm-li",
+          "kind": "im_message",
+          "occurred_at": "2026-11-20T15:05:00+08:00",
+          "ingested_at": "2026-11-20T15:06:00+08:00",
+          "conversation_id": "dm-li-manager",
+          "sender_id": "U_ZHANGSAN",
+          "sender_name": "张三",
+          "direction": "out",
+          "mentions": [],
+          "reply_to": { "external_id": "A01-R3", "sender_id": "U_ZHANGSAN" },
+          "summary": "本人反馈处理完成并提议收尾，待交办人确认",
+          "body": "模板已经更换完成，业务侧重试正常，这个事可以收尾了。"
+        }
+      ],
+      "human_actions": []
+    },
+    {
+      "index": 4,
+      "description": "交办人仅回复「好的」：ack_only 不是收尾证据，不允许自动收尾",
+      "clock_at": "2026-11-20T15:25:00+08:00",
+      "records": [
+        {
+          "external_id": "A01-R5",
+          "source_id": "src-dm-li",
+          "kind": "im_message",
+          "occurred_at": "2026-11-20T15:20:00+08:00",
+          "ingested_at": "2026-11-20T15:21:00+08:00",
+          "conversation_id": "dm-li-manager",
+          "sender_id": "U_LI_MANAGER",
+          "sender_name": "李经理",
+          "direction": "in",
+          "mentions": [],
+          "reply_to": { "external_id": "A01-R4", "sender_id": "U_ZHANGSAN" },
+          "summary": "交办人回复「好的」（仅确认，非收尾证据）",
+          "body": "好的"
+        }
+      ],
+      "human_actions": []
+    },
+    {
+      "index": 5,
+      "description": "人工收尾：用户以 human_confirmed 证据确认本次追问闭环",
+      "clock_at": "2026-11-20T15:30:00+08:00",
+      "records": [],
+      "human_actions": [
+        {
+          "op": "item_close",
+          "item_origin_record": "A01-R1",
+          "evidence_type": "human_confirmed",
+          "note": "交办人已确认，本次追问闭环（不等于图纸打印项目整体结束）"
+        }
+      ]
+    }
+  ],
+  "redaction_note": "所有人名、会话、系统均为脱敏合成数据（张三/李经理为占位身份，非真实人员）。"
+}

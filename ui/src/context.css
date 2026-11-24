@@ -1,0 +1,56 @@
+.workspace-nav-group > p { margin: 10px 12px 4px; color: var(--muted); font-size: 12px; }
+.workspace-nav-group + .workspace-nav-group { border-top: 1px solid var(--border); margin-top: 8px; padding-top: 4px; }
+.sidebar-nav .workspace-nav-group .nav-link { margin: 0; min-height: 34px; }
+.followup-nav { display: flex; gap: 16px; padding: 15px 4% 0; }
+.followup-nav a { color: var(--muted); font-size: 13px; text-underline-offset: 4px; }
+.followup-nav [aria-current] { color: var(--accent); font-weight: 650; }
+.workspace-quick { width: 100%; text-align: left; border: 1px solid var(--border); background: var(--surface); color: var(--accent); padding: 13px 16px; border-radius: var(--radius-md); font: inherit; cursor: pointer; }
+.workspace-quick:disabled { color: var(--muted); cursor: default; }
+.workspace-projects { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,210px),1fr)); gap: 12px; }
+.workspace-projects article { border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px; }
+.workspace-projects article > a { font-weight: 650; }
+.workspace-projects p { margin: 8px 0 0; }
+@media (max-width:720px) {
+  .sidebar .sidebar-nav { display: flex; flex-direction: column; }
+  .workspace-nav-group { display: flex; flex-wrap: wrap; }
+  .workspace-nav-group > p { display: none; }
+  .sidebar-nav .workspace-nav-group .nav-link { padding: 4px 7px; }
+  .workspace-nav-group + .workspace-nav-group { margin-top: 0; }
+}
+.ctx-page { overflow-wrap: anywhere; }
+.ctx-page .ctx-heading, .ctx-actions, .ctx-filters { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.ctx-page .ctx-heading { justify-content: space-between; }
+.ctx-page section { margin-block: 24px; }
+.ctx-page h2, .ctx-form > fieldset > legend { font-size: 17px; font-weight: 650; color: var(--ink); }
+.ctx-page h2 { margin: 20px 0 8px; }
+.ctx-page a { color: var(--accent); text-underline-offset: 3px; }
+.ctx-list { margin: 0; padding: 0; list-style: none; }
+.ctx-list li { padding: 12px 0; border-bottom: 1px solid var(--border); }
+.ctx-list a { font-size: 15px; font-weight: 600; }
+.ctx-excerpt { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin: 6px 0; }
+.ctx-meta, .ctx-muted { color: var(--muted); }
+.ctx-meta { margin: 4px 0; font-size: 13px; font-variant-numeric: tabular-nums; }
+.ctx-prose, .ctx-materials { white-space: pre-wrap; line-height: 1.65; }
+.ctx-form { margin: 14px 0 24px; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); }
+.ctx-form fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+.ctx-form label, .ctx-filters label { display: grid; gap: 4px; color: var(--text); font-size: 14px; }
+.ctx-form label { margin-block: 10px; }
+.ctx-filters { align-items: end; margin-block: 12px; }
+.ctx-filters label:first-child { flex: 1 1 15em; }
+.ctx-filters label { max-width: 100%; }
+.ctx-page :is(input:not([type=checkbox]), textarea, select) { box-sizing: border-box; width: 100%; min-width: 0; padding: 7px 10px; border: 1px solid var(--n-300); border-radius: var(--radius-md); background: var(--raised); color: var(--ink); font: inherit; }
+.ctx-page textarea { resize: vertical; }
+.ctx-checks { display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.ctx-checks label { display: inline-flex; align-items: center; gap: 5px; }
+.ctx-actions { margin-block: 12px 4px; }
+
+/* Record timeline and project history */
+.ctx-day { margin: 10px 0; color: var(--muted); font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.ctx-excerpt { margin: 4px 0; max-width: 72ch; color: var(--ink); line-height: 1.6; white-space: pre-line; }
+.ctx-sections { display: flex; gap: 4px; flex-wrap: wrap; margin-block: 14px 4px; }
+.ctx-sections button { border: 0; border-radius: var(--radius-md); padding: 7px 12px; background: transparent; color: var(--muted); font: inherit; cursor: pointer; }
+.ctx-sections button:is(:hover, [aria-pressed=true]) { color: var(--accent); background: var(--shell, #e7ede8); }
+.ctx-sections button[aria-pressed=true] { font-weight: 650; }
+.ctx-source { margin-block: 16px; }
+.ctx-source .ctx-prose { max-width: 72ch; }
+.ctx-timeline li:first-child .ctx-day { margin-top: 0; }

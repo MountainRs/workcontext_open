@@ -1,0 +1,14 @@
+[package]
+name = "workcontext-store"
+description = "SQLite 存储：连接、迁移、仓储、FTS、备份"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+rusqlite = { workspace = true }
+thiserror = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+# 备份 manifest sha256 与恢复/保留事件的确定性 ID（详细设计 §14.1/§14.2）。
+sha2 = "0.10"

@@ -1,0 +1,14 @@
+/target/
+node_modules/
+/ui/dist/
+*.tsbuildinfo
+.DS_Store
+/crates/desktop/gen/
+.env
+.env.*
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+/.venv/
+__pycache__/
+/acceptance/

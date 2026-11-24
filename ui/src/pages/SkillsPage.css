@@ -1,0 +1,11 @@
+.skills-filters { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; margin: 18px 0; }
+.skills-filters label { display: grid; gap: 5px; min-width: 0; }
+.skills-filters label:first-child { flex: 1 1 17rem; }
+.skills-filters input, .skills-filters select { font: inherit; background: white; color: #17261f; border: 1px solid #b8c7be; border-radius: 8px; padding: 7px 10px; min-width: 0; max-width: 100%; }
+.skills-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 16px; }
+.skills-row h2 { margin: 0; font-size: 1.05rem; }
+.skills-list li { overflow-wrap: anywhere; }
+.skills-available, .skills-unavailable { font-size: .85rem; }
+.skills-available { color: #235644; }
+.skills-unavailable { color: #865b12; }
+.skills-path { display: block; color: #57665d; user-select: all; margin-top: 4px; font-size: .86rem; }

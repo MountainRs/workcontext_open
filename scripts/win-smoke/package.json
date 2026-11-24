@@ -1,0 +1,10 @@
+{
+  "name": "workcontext-win-smoke",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "WorkContext Windows 冒烟的 WebDriver 客户端依赖。独立的 npm 项目：由 scripts/win-smoke.ps1 用 npm ci 安装，不属于应用依赖；smoke.mjs 必须经 win-smoke.ps1 传参调用。",
+  "dependencies": {
+    "selenium-webdriver": "^4.34.0"
+  }
+}

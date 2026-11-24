@@ -1,0 +1,26 @@
+{
+  "belongs_to_me": "yes",
+  "classification": "one_off",
+  "confidence": 88,
+  "current_turn": "none",
+  "evidence": [
+    "A03-R1",
+    "A03-R2"
+  ],
+  "followup": {
+    "at": null,
+    "basis": null,
+    "type": "none"
+  },
+  "needs_action": false,
+  "next_action": null,
+  "rationale": "群内 @本人 请求开通图纸目录下载权限，本人随后回复「ok了，已开通」；请求与完成证据在同一会话闭环，无剩余行动。",
+  "related_hint": null,
+  "schema_version": "classify/v1",
+  "source_ids": [
+    "A03-R1",
+    "A03-R2"
+  ],
+  "suggested_title": "开通 11 月图纸目录下载权限",
+  "uncertainties": []
+}

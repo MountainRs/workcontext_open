@@ -1,0 +1,127 @@
+{
+  "schema_version": "case-expected/v1",
+  "case_id": "A11",
+  "assertion_basis": [
+    "PRD §12 A11（V0.1 横向必过）：立刻从本人关注中移除，留痕且不被重复同步静默恢复",
+    "PRD §13.2-3：人工纠正不能被重复同步无证据地覆盖",
+    "详细设计 §16.2 A11：纠错后再次跑同一 input_sha256 → 字段不被覆盖；agent_run 记 rejected(R_LOCKED)",
+    "详细设计 §5.1 V07 / §3.1 field_override 不变量：存在的 field 即锁定，Agent 写入该字段一律拒绝并记事件",
+    "详细设计 §9 纠错语义：只锁用户真正表态的字段"
+  ],
+  "assertion_scope": "只断言业务语义字段；不断言生成 ID、时间戳、content_hash、input_sha256",
+  "stages": [
+    {
+      "index": 1,
+      "records": [
+        { "external_id": "A11-R1", "prefilter": "keep", "prefilter_reason": "dm_in", "judge_state": "judged" }
+      ],
+      "agent_runs": [
+        {
+          "records": ["A11-R1"],
+          "status": "ok",
+          "intent_class": "followup",
+          "belongs_to_me": "yes",
+          "confidence_min": 60
+        }
+      ],
+      "items": [
+        {
+          "identity": { "origin_record": "A11-R1", "intent_class": "followup" },
+          "title_contains": ["图纸复核"],
+          "lifecycle": "active",
+          "attention": "me",
+          "current_turn": "me",
+          "next_action_nonempty": true,
+          "next_action_contains": ["图纸复核"],
+          "followup_type": "none",
+          "followup_at": null,
+          "awaiting_confirmation": false,
+          "today": { "visible": true, "group": "me" }
+        }
+      ],
+      "item_count": 1
+    },
+    {
+      "index": 2,
+      "records": [],
+      "items": [
+        {
+          "identity": { "origin_record": "A11-R1" },
+          "same_item_as_stage": 1,
+          "lifecycle": "ignored",
+          "ignore_reason_nonempty": true,
+          "today": { "visible": false },
+          "note": "「不是我的任务」→ 立即从本人关注移除（active→ignored，人工触发，带原因枚举 not_mine）"
+        }
+      ],
+      "item_count": 1,
+      "field_overrides": [
+        { "field": "belongs_to_me", "value_json": "false", "locked": true },
+        { "field": "lifecycle", "value_json": "\"ignored\"", "locked": true }
+      ],
+      "work_events": [
+        { "event_type": "corrected", "actor": "human" }
+      ]
+    },
+    {
+      "index": 3,
+      "records": [],
+      "agent_runs": [
+        {
+          "records": ["A11-R1"],
+          "status": "rejected",
+          "rejection_rule": "R_LOCKED",
+          "note": "同一 input_sha256 重跑：mock 返回同样输出，但 belongs_to_me / lifecycle 已被人工锁锁定 → V07 拒绝覆盖（详细设计 §16.2：agent_run 记 rejected(R_LOCKED)）"
+        }
+      ],
+      "items": [
+        {
+          "identity": { "origin_record": "A11-R1" },
+          "same_item_as_stage": 1,
+          "lifecycle": "ignored",
+          "lifecycle_must_not_be": ["active"],
+          "today": { "visible": false },
+          "note": "字段不被 mock 重写；事项不得被静默恢复为本人待办"
+        }
+      ],
+      "item_count": 1,
+      "field_overrides": [
+        { "field": "belongs_to_me", "value_json": "false", "locked": true },
+        { "field": "lifecycle", "value_json": "\"ignored\"", "locked": true }
+      ],
+      "work_events": [
+        { "event_type": "rejected", "actor": "agent" }
+      ]
+    }
+  ],
+  "final": {
+    "item_count": 1,
+    "counts": { "active": 0, "candidate": 0, "closed": 0, "ignored": 1 },
+    "items": [
+      {
+        "identity": { "origin_record": "A11-R1" },
+        "lifecycle": "ignored",
+        "today": { "visible": false }
+      }
+    ],
+    "field_overrides": [
+      { "field": "belongs_to_me", "value_json": "false", "locked": true },
+      { "field": "lifecycle", "value_json": "\"ignored\"", "locked": true }
+    ],
+    "work_events": [
+      { "event_type": "created", "actor": "agent" },
+      { "event_type": "corrected", "actor": "human" },
+      { "event_type": "rejected", "actor": "agent" }
+    ],
+    "forbidden": {
+      "silent_restore": "第 3 阶段后事项不得回到 active/今日页（人工锁被无视即失败）",
+      "full_lock": "只允许锁定 belongs_to_me 与 lifecycle 两个字段；不得把整个事项所有字段冻死（详细设计 §9）"
+    },
+    "forbidden_strings_in_ui": ["已自动完成", "对方未回复"]
+  },
+  "notes": [
+    "误判是「锚点合法的合理误判」：私聊 direction=in 满足 V03 ①，判读层无法发现口头移交——这正是 A11 依赖人工纠错 + field_override 的原因（与 A06 的 V03 硬拦截互补）。",
+    "文档口径提示：详细设计 §5.1 V07 写「跳过该字段，其余照常」，而 §16.2/§4.4 要求 agent_run 记 rejected(R_LOCKED)。本夹具按 §16.2 断言 rejected(R_LOCKED)：本例锁定的正是判读要写的核心字段（归属+生命周期），无其余字段可照常写入。若实现选择「run=ok + 字段跳过 + rejected 事件」，则至少必须保证事项字段不被改写（B2 完成判据）——建议两处文档统一。",
+    "纠错只锁 belongs_to_me 与 lifecycle（用户真正表态的维度），attention/next_action 等未表态字段仍可被新证据更新。"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "belongs_to_me": "yes",
+  "classification": "followup",
+  "confidence": 81,
+  "current_turn": "me",
+  "evidence": [
+    "A02-R1",
+    "A02-R2"
+  ],
+  "followup": {
+    "at": null,
+    "basis": null,
+    "type": "none"
+  },
+  "needs_action": true,
+  "next_action": "梳理图纸归档整改进度与遗留问题，必要时请教周工",
+  "rationale": "领导私聊要求优先摸清图纸归档整改进度并给出可咨询对象，本人承诺先梳理；正文只有「优先」，无任何明确时间点，不设跟进时间。",
+  "related_hint": null,
+  "schema_version": "classify/v1",
+  "source_ids": [
+    "A02-R1",
+    "A02-R2"
+  ],
+  "suggested_title": "摸清图纸归档整改进度",
+  "uncertainties": []
+}

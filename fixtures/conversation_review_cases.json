@@ -1,0 +1,18 @@
+{
+  "date": "2026-11-23",
+  "cutoff": "18:00",
+  "type": "私聊",
+  "responsibilities": {"usage": "本人负责向该定期报告提供晒图份数。"},
+  "cases": [
+    {"id":"P1","roles":[],"messages":[["我","我来调整运行参数吗？"],["成员1","也行。"]],"expected_open":[{"action":"调整运行参数","owner":"我"}]},
+    {"id":"P2","roles":[],"messages":[["我","技术上能调这个参数吗？"],["成员1","可以。"]],"expected_open":[]},
+    {"id":"P3","roles":[],"messages":[["我","我来调整运行参数吗？"],["成员1","不用，我自己来改。"]],"expected_open":[{"action":"调整运行参数","owner":"他人"}]},
+    {"id":"P4","roles":["usage"],"messages":[["成员1","又到周报时间了，我在汇总，晒图份数这栏还是空的。"]],"expected_open":[{"action":"提供晒图份数","owner":"我"}]},
+    {"id":"P5","roles":["usage"],"messages":[["成员1","本周的晒图份数已收到，我来汇总提交整体报告。"]],"expected_open":[{"action":"汇总提交整体报告","owner":"他人"}]},
+    {"id":"S1","roles":[],"messages":[["我","咱俩本周都要完成训练，各自交一份笔记。"],["成员1","我那份交了。"]],"expected_open":[{"action":"完成本人训练并交笔记","owner":"我"}]},
+    {"id":"S2","roles":[],"messages":[["我","我们组本周只交一份说明，谁来起草还没定。"]],"expected_open":[{"action":"起草组内说明","owner":"待定"}]},
+    {"id":"S3","roles":[],"messages":[["我","咱俩都得填，我的已经交了，你的还没交，今天记得填。"]],"expected_open":[{"action":"提交对方的填写结果","owner":"他人"}]},
+    {"id":"S4","roles":[],"messages":[["成员1","我们部门要把纸质清单录入系统，你觉得拍照识别可行吗？"],["我","可以试，识别后要人工核对。"]],"expected_open":[{"action":"将对方部门的清单录入系统","owner":"他人"}]},
+    {"id":"P6","roles":["usage"],"messages":[["成员1","这周晒图份数由小周取，已经交给他了，别重复。"]],"expected_open":[{"action":"取本周晒图份数","owner":"他人"}]}
+  ]
+}

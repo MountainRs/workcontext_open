@@ -1,0 +1,80 @@
+{
+  "schema_version": "case-expected/v1",
+  "case_id": "A06",
+  "assertion_basis": [
+    "PRD §12 A06（V0.1 必过，归属负例）：不加入本人待办；如果信息不足则待确认",
+    "PRD §6.1 R01：群名、参与讨论、被列为联系人或他人被点名，不足以把任务归给本人",
+    "详细设计 §16.2 A06：不建 active 事项；或 candidate + 待确认（V03）",
+    "详细设计 §5.1 V03：belongs_to_me=yes 无锚点 → 降级 unclear → 待确认",
+    "详细设计 §6.3：无信号群消息 skip(no_signal) 但仍入库"
+  ],
+  "assertion_scope": "只断言业务语义字段；不断言生成 ID、时间戳、content_hash、input_sha256",
+  "stages": [
+    {
+      "index": 1,
+      "records": [
+        { "external_id": "A06-R0", "prefilter": "skip", "prefilter_reason": "no_signal", "judge_state": "skipped" },
+        { "external_id": "A06-R1", "prefilter": "skip", "prefilter_reason": "no_signal", "judge_state": "skipped" },
+        { "external_id": "A06-R2", "prefilter": "keep", "prefilter_reason": "at_me", "judge_state": "judged" },
+        { "external_id": "A06-R3", "prefilter": "keep", "prefilter_reason": "name_mention", "judge_state": "judged" }
+      ],
+      "agent_runs": [
+        {
+          "records": ["A06-R2"],
+          "status": "ok",
+          "intent_class": "info",
+          "belongs_to_me": "no",
+          "outcome": "不建事项，仅存来源记录与索引"
+        },
+        {
+          "records": ["A06-R3"],
+          "status": "ok",
+          "raw_belongs_to_me": "yes",
+          "post_validation": {
+            "belongs_to_me": "unclear",
+            "downgrade_rule": "V03"
+          },
+          "note": "mock 误判 belongs=yes，但无私聊/未 @本人/无本人承诺 → V03 强制降级"
+        }
+      ],
+      "items": [
+        {
+          "identity": { "origin_record": "A06-R3" },
+          "title_contains": ["图纸评审"],
+          "lifecycle": "candidate",
+          "lifecycle_must_not_be": ["active"],
+          "awaiting_confirmation": true,
+          "followup_type": "none",
+          "followup_at": null,
+          "today": { "visible": true, "group": "confirm" },
+          "note": "归属不明 → candidate + 待确认；绝不进入「轮到我处理」"
+        }
+      ],
+      "item_count": 1
+    }
+  ],
+  "final": {
+    "item_count": 1,
+    "counts": { "active": 0, "candidate": 1, "closed": 0, "ignored": 0 },
+    "items": [
+      {
+        "identity": { "origin_record": "A06-R3" },
+        "lifecycle": "candidate",
+        "awaiting_confirmation": true,
+        "today": { "visible": true, "group": "confirm" }
+      }
+    ],
+    "no_item_from_records": ["A06-R1", "A06-R2"],
+    "forbidden": {
+      "active_item": "本用例结束时不得存在任何 active 事项（PRD A06 硬断言，V03 守卫生效）",
+      "assign_to_lisi_or_magong": "不得为李四/马工生成任何事项（只管理本人责任流转，PRD §16）"
+    },
+    "forbidden_strings_in_ui": ["已自动完成", "对方未回复"]
+  },
+  "notes": [
+    "三条防线分层验证：R0/R1 在预筛层被 skip(no_signal)（仍入库，judge_state=skipped）；R2 判读正确负例不建事项；R3 由 V03 锚点校验兜底降级。",
+    "A06-R3 虽然正文含本人姓名（name_mention keep），但未 @本人（mentions 只有马工）→ V03 三个锚点全缺 → belongs=yes 断言不成立 → 待确认。这是 B2 完成判据「A06 夹具不产生 active 事项（V03 守卫生效）」的直接实现点。",
+    "A06-R2 的 @本人 满足 V03 锚点②，但语义上任务归李四（R01）——判读正确时 belongs_to_me=no，不建事项；若判读误报 yes，锚点存在时 V03 不拦，需依赖判读质量与人工纠错（A11 路径）。",
+    "被 skip 的记录仍必须入库（judge_state=skipped）：否则无法事后证明「看过但判断无关」（详细设计 §6.3）。"
+  ]
+}

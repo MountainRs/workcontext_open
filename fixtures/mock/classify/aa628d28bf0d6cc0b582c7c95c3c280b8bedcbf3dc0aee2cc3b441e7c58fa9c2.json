@@ -1,0 +1,26 @@
+{
+  "belongs_to_me": "yes",
+  "classification": "followup",
+  "confidence": 80,
+  "current_turn": "other",
+  "evidence": [
+    "A01-R3"
+  ],
+  "followup": {
+    "at": null,
+    "basis": null,
+    "type": "none"
+  },
+  "needs_action": true,
+  "next_action": "等供应商更换模板，完成后向交办人同步处理结果",
+  "rationale": "本人已联系供应商，确认为打印服务的模板损坏、供应商处理中；更换完成前轮到供应商，本人待同步结果。",
+  "related_hint": null,
+  "schema_version": "classify/v1",
+  "source_ids": [
+    "A01-R3"
+  ],
+  "suggested_title": "跟进图纸打印模板报错（等供应商更换模板）",
+  "uncertainties": [
+    "供应商完成模板更换的具体时间未给出，无时间依据不设跟进时间"
+  ]
+}

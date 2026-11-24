@@ -1,0 +1,26 @@
+{
+  "belongs_to_me": "yes",
+  "classification": "followup",
+  "confidence": 72,
+  "current_turn": "me",
+  "evidence": [
+    "A06-R3"
+  ],
+  "followup": {
+    "at": null,
+    "basis": null,
+    "type": "none"
+  },
+  "needs_action": true,
+  "next_action": "配合马工对齐图纸评审的资料接口事宜",
+  "rationale": "钱经理安排图纸评审并列本人为资料接口人，判读将其视为本人的配合任务；属注入的合理误判样本——正文未 @本人、无私聊、无本人承诺，归属锚点全缺，应被 V03 降级为 unclear。",
+  "related_hint": null,
+  "schema_version": "classify/v1",
+  "source_ids": [
+    "A06-R3"
+  ],
+  "suggested_title": "图纸评审配合对齐",
+  "uncertainties": [
+    "正文未 @本人，「资料接口人」是否等同执行责任人存疑"
+  ]
+}

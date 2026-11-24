@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "主窗口：前端不开放 shell、文件或对话框权限。",
+  "windows": ["main"],
+  "permissions": ["core:default"]
+}

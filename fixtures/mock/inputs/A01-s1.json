@@ -1,0 +1,46 @@
+{
+  "conversation": {
+    "display_name": "私聊·李经理",
+    "id": "dm-li-manager",
+    "type": "dm"
+  },
+  "kind": "classify",
+  "me": {
+    "display_name": "张三",
+    "user_id": "U_ZHANGSAN"
+  },
+  "participants": [
+    {
+      "display_name": "李经理",
+      "user_id": "U_LI_MANAGER"
+    }
+  ],
+  "prompt_version": "classify/v1",
+  "records": [
+    {
+      "body": "图纸打印模板那个报错，你跟一下，先找供应商确认原因。",
+      "direction": "in",
+      "id": "A01-R1",
+      "mentions": [],
+      "occurred_at": "2026-11-20T09:12:00+08:00",
+      "reply_to": null,
+      "sender_id": "U_LI_MANAGER",
+      "sender_name": "李经理"
+    },
+    {
+      "body": "好的，我先联系供应商确认，有结果第一时间向您反馈。",
+      "direction": "out",
+      "id": "A01-R2",
+      "mentions": [],
+      "occurred_at": "2026-11-20T09:15:00+08:00",
+      "reply_to": null,
+      "sender_id": "U_ZHANGSAN",
+      "sender_name": "张三"
+    }
+  ],
+  "schema_version": "classify-input/v1",
+  "source": {
+    "id": "src-dm-li",
+    "kind": "dws_im"
+  }
+}

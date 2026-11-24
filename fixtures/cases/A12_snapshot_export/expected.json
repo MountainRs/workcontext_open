@@ -1,0 +1,126 @@
+{
+  "schema_version": "case-expected/v1",
+  "case_id": "A12",
+  "assertion_basis": [
+    "PRD §12 A12（V0.1 横向必过）：包含最小可复现证据、期望、应用版本；敏感内容受控",
+    "PRD §10.2：默认仅导出问题描述、引用标识和必要脱敏片段，不自动附带整段对话",
+    "PRD §13.2-9：迭代池可导出 Markdown/JSON 并附软件版本",
+    "详细设计 §16.2 A12：含期望、版本、引用；默认脱敏；不含完整对话",
+    "详细设计 §7.3 / §13.2 日志脱敏：手机号等不得出现在导出与日志"
+  ],
+  "assertion_scope": "只断言业务语义字段与导出内容约束；不断言生成 ID、时间戳、content_hash、input_sha256",
+  "stages": [
+    {
+      "index": 1,
+      "records": [
+        { "external_id": "A12-R1", "prefilter": "keep", "prefilter_reason": "dm_in", "judge_state": "judged" }
+      ],
+      "agent_runs": [
+        {
+          "records": ["A12-R1"],
+          "status": "ok",
+          "intent_class": "followup",
+          "belongs_to_me": "yes",
+          "confidence_min": 60,
+          "note": "mock 误判：通知类消息被建为待跟进事项（spurious_item 缺陷样本）"
+        }
+      ],
+      "items": [
+        {
+          "identity": { "origin_record": "A12-R1", "intent_class": "followup" },
+          "title_contains": ["停机"],
+          "lifecycle": "active",
+          "attention": "me",
+          "current_turn": "me",
+          "next_action_nonempty": true,
+          "followup_type": "none",
+          "followup_at": null,
+          "awaiting_confirmation": false,
+          "today": { "visible": true, "group": "me" }
+        }
+      ],
+      "item_count": 1
+    },
+    {
+      "index": 2,
+      "records": [],
+      "snapshot": {
+        "count": 1,
+        "kind": "spurious_item",
+        "severity": "medium",
+        "status": "open",
+        "redaction": "masked",
+        "app_version_prefix": "0.1.",
+        "schema_version": 1,
+        "description_contains": ["停机"],
+        "expected_contains": ["不建事项"],
+        "input_refs_include": ["A12-R1"],
+        "route": "/today"
+      },
+      "items": [
+        {
+          "identity": { "origin_record": "A12-R1" },
+          "same_item_as_stage": 1,
+          "lifecycle": "ignored",
+          "ignore_reason_nonempty": true,
+          "today": { "visible": false },
+          "note": "「只是信息」纠错立即生效，快照与纠错相互独立（一次纠错可选建快照）"
+        }
+      ],
+      "item_count": 1,
+      "field_overrides": [
+        { "field": "lifecycle", "value_json": "\"ignored\"", "locked": true }
+      ],
+      "work_events": [
+        { "event_type": "corrected", "actor": "human" }
+      ]
+    },
+    {
+      "index": 3,
+      "records": [],
+      "export": {
+        "json": {
+          "fields_present": ["schema_version", "app_version", "description", "expected", "refs"],
+          "contains_all": ["不建事项", "0.1.", "A12-R1"],
+          "not_contains": ["13800001234", "你知悉就行"],
+          "note": "机器复放格式：期望字段、应用版本、schema_version、来源引用 ID 齐备；默认不含消息正文"
+        },
+        "md": {
+          "contains_all": ["问题描述", "期望", "0.1.", "A12-R1"],
+          "not_contains": ["13800001234", "你知悉就行"],
+          "note": "人读格式：问题描述/期望/版本/引用；默认不含消息正文"
+        },
+        "include_body": false,
+        "forbidden_any_format": ["13800001234"]
+      }
+    }
+  ],
+  "final": {
+    "item_count": 1,
+    "counts": { "active": 0, "candidate": 0, "closed": 0, "ignored": 1 },
+    "items": [
+      {
+        "identity": { "origin_record": "A12-R1" },
+        "lifecycle": "ignored",
+        "today": { "visible": false }
+      }
+    ],
+    "snapshot": {
+      "count": 1,
+      "status": "open",
+      "redaction": "masked",
+      "app_version_prefix": "0.1."
+    },
+    "forbidden": {
+      "raw_phone_in_any_export_or_log": "原始号码 13800001234 不得出现在任何导出文件或日志（只能出现脱敏形式 138****1234）",
+      "full_conversation_in_export": "默认导出不得包含消息完整正文（「你知悉就行」等正文片段不得出现）"
+    },
+    "forbidden_strings_in_ui": ["已自动完成", "对方未回复"]
+  },
+  "notes": [
+    "A12 两个断言簇：(1) 快照行含期望(expected)/版本(app_version 0.1.x)/引用(A12-R1 + 判读 run)/schema_version=1，redaction=masked，status=open；(2) 默认 includeBody=false 导出（MD+JSON）不含消息正文与原始手机号。",
+    "误判类型选 spurious_item（不该建的事项）：停机通知仅需知悉，与 PRD §6.1「仅作为信息」输出一致，是最常见的误判形态。",
+    "快照与纠错解耦：纠错立即改业务数据（ignored/今日页消失），快照只进迭代池留证（PRD §6.5）。",
+    "导出格式与详细设计 §2「snapshot/v1 JSON + Markdown 模板」对应：JSON 面向机器复放，MD 面向人读。"
+  ]
+}

@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "workcontext:classify/v1",
+  "title": "classify/v1 判读输出契约",
+  "description": "详细设计 §8.2 的机器可读版。Rust 侧参考校验：crates/infra/src/contract.rs（两者由集成测试对账）。口径差异：followup.at 只要求非空字符串，date-time 解析失败由策略层按 V04 清空；长度按 Unicode 码点计。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "source_ids",
+    "classification",
+    "belongs_to_me",
+    "needs_action",
+    "suggested_title",
+    "next_action",
+    "current_turn",
+    "followup",
+    "evidence",
+    "rationale",
+    "confidence",
+    "uncertainties",
+    "related_hint"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "classify/v1"
+    },
+    "source_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "classification": {
+      "enum": [
+        "info",
+        "one_off",
+        "followup",
+        "thread_update",
+        "needs_confirmation",
+        "noise"
+      ]
+    },
+    "belongs_to_me": {
+      "enum": ["yes", "no", "unclear"]
+    },
+    "needs_action": {
+      "type": "boolean"
+    },
+    "suggested_title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 60
+    },
+    "next_action": {
+      "type": ["string", "null"],
+      "maxLength": 200
+    },
+    "current_turn": {
+      "enum": ["me", "other", "none"]
+    },
+    "followup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "at", "basis"],
+      "properties": {
+        "type": {
+          "enum": ["none", "deadline", "promised_by", "manual", "check_later"]
+        },
+        "at": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "minLength": 1,
+              "format": "date-time"
+            }
+          ]
+        },
+        "basis": {
+          "type": ["string", "null"],
+          "maxLength": 200
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "rationale": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "confidence": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "uncertainties": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 5
+    },
+    "related_hint": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "target_item_ids": {"type": "array", "items": {"type": "string"}},
+        "reason": {"type": ["string", "null"]}
+      }
+    },
+    "resolution": {
+      "type": "object",
+      "description": "可选；出现即提议收尾。是否允许收尾由策略层按 §3.3 收尾证据白名单 + V05 收尾门裁决（ack_only → 降级待人工确认）。evidence_type 只允许消息证据可支撑的 4 种：human_confirmed 只能由人工操作产生（如 A01 阶段5 的 human_actions.item_close），模型输出一律拒绝。",
+      "additionalProperties": false,
+      "required": ["evidence_type", "evidence_ids"],
+      "properties": {
+        "evidence_type": {
+          "enum": [
+            "explicit_complete",
+            "artifact_accepted",
+            "ack_only",
+            "artifact_created"
+          ]
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 200
+        }
+      }
+    }
+  }
+}

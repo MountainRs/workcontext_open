@@ -1,0 +1,73 @@
+{
+  "schema_version": "case-expected/v1",
+  "case_id": "A02",
+  "assertion_basis": [
+    "PRD §12 A02（V0.1 必过）：识别本人下一步「了解情况」，不凭空设期限、不给咨询对象强行分派责任",
+    "PRD §6.1 R03：「优先」「尽快」不自动映射日期",
+    "PRD §6.1 R01：可咨询对象不是责任人",
+    "详细设计 §16.2 A02：followup_type=none（不得凭空造日期）；不给他人生成事项",
+    "详细设计 §5.1 V04：时间依据必须有证据正文子串支撑"
+  ],
+  "assertion_scope": "只断言业务语义字段；不断言生成 ID、时间戳、content_hash、input_sha256",
+  "stages": [
+    {
+      "index": 1,
+      "records": [
+        { "external_id": "A02-R1", "prefilter": "keep", "prefilter_reason": "dm_in", "judge_state": "judged" },
+        { "external_id": "A02-R2", "prefilter": "keep", "prefilter_reason": "dm_out", "judge_state": "judged" }
+      ],
+      "agent_runs": [
+        {
+          "records": ["A02-R1", "A02-R2"],
+          "status": "ok",
+          "intent_class": "followup",
+          "belongs_to_me": "yes",
+          "followup_type": "none",
+          "confidence_min": 60
+        }
+      ],
+      "items": [
+        {
+          "identity": { "origin_record": "A02-R1", "intent_class": "followup" },
+          "title_contains": ["整改"],
+          "lifecycle": "active",
+          "attention": "me",
+          "current_turn": "me",
+          "next_action_nonempty": true,
+          "next_action_contains": ["整改"],
+          "followup_type": "none",
+          "followup_at": null,
+          "awaiting_confirmation": false,
+          "today": { "visible": true, "group": "me" }
+        }
+      ],
+      "item_count": 1
+    }
+  ],
+  "final": {
+    "item_count": 1,
+    "counts": { "active": 1, "candidate": 0, "closed": 0, "ignored": 0 },
+    "items": [
+      {
+        "identity": { "origin_record": "A02-R1" },
+        "lifecycle": "active",
+        "attention": "me",
+        "followup_type": "none",
+        "followup_at": null,
+        "today": { "visible": true, "group": "me" }
+      }
+    ],
+    "no_item_for_persons": ["U_ZHOUG"],
+    "forbidden": {
+      "followup_at_not_null": "正文只有「优先」，无任何承诺时间证据；followup_at 必须为 null（V04/R03）",
+      "extra_items": "不得为咨询对象周工生成第二条事项（R01）"
+    },
+    "forbidden_strings_in_ui": ["已自动完成", "对方未回复"]
+  },
+  "notes": [
+    "核心负例断言：尽管正文出现「优先」，followup_type 必须为 none、followup_at 必须为 null——若任何环节产出日期即违规（计入「无依据的时间推断」指标）。",
+    "item_count=1 且 no_item_for_persons=[周工]：可咨询对象不是责任人，不建第二条事项。",
+    "归属锚点：私聊 direction=in（A02-R1）满足 V03 ①，本人答复承诺（A02-R2）满足 V03 ③，belongs_to_me=yes 合法。",
+    "dm_out keep 断言理由同 A01（V03 锚点③需要本人承诺参与判读）。"
+  ]
+}

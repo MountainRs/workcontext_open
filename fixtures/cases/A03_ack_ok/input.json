@@ -1,0 +1,80 @@
+{
+  "schema_version": "case/v1",
+  "case_id": "A03",
+  "title": "一句话小事：开下载权限并回复「ok了」，不产生悬挂事项",
+  "prd_refs": [
+    "PRD §12 A03（V0.1 必过：不产生永久悬挂事项，可建议本次收尾）",
+    "PRD §1.3 B03（同一对话内轻任务，无需额外建档）",
+    "PRD §6.1 R05（轻事务有明确完成证据时可建议归档）",
+    "详细设计 §16.2 A03（classification=one_off + needs_action=false）",
+    "详细设计 §3.4 映射表：one_off 且 needs_action=false → ignored(no_action)"
+  ],
+  "harness": {
+    "agent_mode": "mock",
+    "dws_mode": "mock",
+    "egress": "none（mock 判读在本地内存完成，无真实出域）"
+  },
+  "me": { "user_id": "U_ZHANGSAN", "display_name": "张三", "employee_no": "E1024" },
+  "persons": {
+    "U_ZHANGSAN": { "display_name": "张三", "is_me": true },
+    "U_ZHAOLIU": { "display_name": "赵六" }
+  },
+  "conversations": {
+    "grp-report-tool": { "type": "group", "display_name": "图纸协作群", "whitelisted": true }
+  },
+  "sources": [
+    {
+      "id": "src-grp-report",
+      "kind": "dws_im",
+      "display_name": "钉钉群·图纸协作群（白名单）",
+      "scope": { "conversation_ids": ["grp-report-tool"] },
+      "enabled": true,
+      "authorized_at": "2026-11-01T09:00:00+08:00"
+    }
+  ],
+  "clock": {
+    "now": "2026-11-21T10:30:00+08:00",
+    "note": "北京时间业务时段；入库时转 UTC 毫秒"
+  },
+  "stages": [
+    {
+      "index": 1,
+      "description": "群内 @我 请求开报表下载权限，本人回复「ok了，已开通」，同一会话内请求与完成闭环",
+      "clock_at": "2026-11-21T10:30:00+08:00",
+      "records": [
+        {
+          "external_id": "A03-R1",
+          "source_id": "src-grp-report",
+          "kind": "im_message",
+          "occurred_at": "2026-11-21T10:05:00+08:00",
+          "ingested_at": "2026-11-21T10:06:00+08:00",
+          "conversation_id": "grp-report-tool",
+          "sender_id": "U_ZHAOLIU",
+          "sender_name": "赵六",
+          "direction": "in",
+          "mentions": ["U_ZHANGSAN"],
+          "reply_to": null,
+          "summary": "群内 @我 请求开通 11 月图纸目录下载权限",
+          "body": "@张三 麻烦帮忙开一下 11 月图纸目录的下载权限，下午要用。"
+        },
+        {
+          "external_id": "A03-R2",
+          "source_id": "src-grp-report",
+          "kind": "im_message",
+          "occurred_at": "2026-11-21T10:12:00+08:00",
+          "ingested_at": "2026-11-21T10:13:00+08:00",
+          "conversation_id": "grp-report-tool",
+          "sender_id": "U_ZHANGSAN",
+          "sender_name": "张三",
+          "direction": "out",
+          "mentions": ["U_ZHAOLIU"],
+          "reply_to": { "external_id": "A03-R1", "sender_id": "U_ZHAOLIU" },
+          "summary": "本人回复已开通下载权限（完成证据）",
+          "body": "ok了，已开通下载权限，你试试看。"
+        }
+      ],
+      "human_actions": []
+    }
+  ],
+  "redaction_note": "所有人名、会话、系统均为脱敏合成数据。"
+}
